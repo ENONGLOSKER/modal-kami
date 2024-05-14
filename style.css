@@ -10,14 +10,14 @@ body{
 .container{
     max-width: 500px;
     height: 100vh;
-    margin: 20px auto;
-    padding: 20px; 
+    margin: 15px auto;
+    padding: 12px; 
 }
 .akun{
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 50px;
+    margin-bottom: 20px;
     background-color: white;
     padding: 12px;
     border-radius: 22px;
@@ -58,6 +58,8 @@ body{
 .saldo .submodal button{
     width: 104px;
     height: 40px;
+    font-weight: 500;
+    font-size: 15px;
     border-radius: 12px;
     border: none;
     background-color: #4000F9;
@@ -74,7 +76,7 @@ body{
 
 
 .list{
-    margin: 40px 0;
+    margin: 20px 0;
 }
 .list .list-menu{
     display: flex;
@@ -83,7 +85,7 @@ body{
 }
 .list .list-menu .masuk, .keluar{
     background-color: white;
-    padding: 20px;
+    padding: 15px;
     border-radius: 12px;
     width: 50%;
 }
@@ -116,7 +118,7 @@ body{
 .list .histori{
     display: flex;
     flex-direction: column;
-    margin-top: 15px;
+    margin-top: 12px;
 }
 .list .histori .ket{
     background-color: rgb(255, 255, 255);
@@ -146,9 +148,9 @@ body{
 .list .histori .ket #icon-masuk, #icon-keluar{
     background-color: #17d302;
     color: white;
-    width: 25px;
-    height: 25px;
-    padding: 10px;
+    width: 24px;
+    height: 20px;
+    padding: 8px;
     border-radius: 50px;
 }
 .list .histori .ket #icon-keluar{
