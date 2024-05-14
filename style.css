@@ -1,0 +1,157 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Poppins", sans-serif;
+}
+body{
+    background-image: linear-gradient(-180deg, #4000F9, #3305B5);
+}
+.container{
+    max-width: 500px;
+    height: 100vh;
+    margin: 20px auto;
+    padding: 20px; 
+}
+.akun{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 50px;
+    background-color: white;
+    padding: 12px;
+    border-radius: 22px;
+}
+.akun img{
+    width: 120px;
+}
+.akun a{
+    background-color: #FDD448;
+    padding: 12px 20px;
+    border-radius: 12px;
+    text-decoration: none;
+    color: #333232;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 600;
+}
+
+.saldo{
+    background-image: linear-gradient(30deg, #FDD448, #E6B303);
+    border-radius: 22px;
+    padding: 30px 25px;
+}
+.saldo .submodal{
+    margin-top: 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+}
+.saldo .submodal .target span{
+    color: rgb(72, 72, 72);
+}
+.saldo .submodal .target h3{
+    color: rgb(37, 37, 37);
+    font-weight: 500;
+}
+.saldo .submodal button{
+    width: 104px;
+    height: 40px;
+    border-radius: 12px;
+    border: none;
+    background-color: #4000F9;
+    color: white;
+}
+.saldo a{
+    background-color: rgb(210, 210, 210);
+    color: black;
+    padding: 12px 22px;
+    text-decoration: none;
+    border-radius: 6px;
+}
+
+
+
+.list{
+    margin: 40px 0;
+}
+.list .list-menu{
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+}
+.list .list-menu .masuk, .keluar{
+    background-color: white;
+    padding: 20px;
+    border-radius: 12px;
+    width: 50%;
+}
+.list .list-menu #icon{
+    background-color: #17d302;
+    color: white;
+    width: 25px;
+    height: 25px;
+    padding: 10px;
+    border-radius: 50px;
+    margin-bottom: 5px;
+}
+.list .list-menu .keluar #icon{
+    background-color: #e6032d;
+}
+.list .list-menu span{
+    font-size: 12px;
+}
+.list .list-menu span{
+    font-size: 12px;
+}
+
+/* list keuangan */
+.list p{
+    color: rgb(235, 235, 235);
+    margin-top: 30px;
+}
+
+/* histori */
+.list .histori{
+    display: flex;
+    flex-direction: column;
+    margin-top: 15px;
+}
+.list .histori .ket{
+    background-color: rgb(255, 255, 255);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    border-radius: 12px;
+    margin-bottom: 15px;
+}
+.list .histori .ket .jenis{
+    display: flex;
+    align-items: center;
+    width: 100%;
+    justify-content: space-between;
+}
+.list .histori .ket .jenis #masuk{
+    color: #17d302;
+}
+.list .histori .ket .jenis #keluar{
+    color: #e6032d;
+}
+.list .histori .ket .jenis .jumlah span{
+    font-size: 12px;
+    color: rgb(99, 99, 99);
+}
+.list .histori .ket #icon-masuk, #icon-keluar{
+    background-color: #17d302;
+    color: white;
+    width: 25px;
+    height: 25px;
+    padding: 10px;
+    border-radius: 50px;
+}
+.list .histori .ket #icon-keluar{
+    background-color: #e6032d;
+    color: white;
+}
