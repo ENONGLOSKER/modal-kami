@@ -9,9 +9,105 @@
     <link rel="icon" href="icon.svg">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
+    <style>
+        :root {
+            --vs-primary: 29 92 255;
+        }
 
+        /*Dialog Styles*/
+        dialog {
+            margin: 50px auto;
+            padding: 1rem 2rem;
+            background: white;
+            max-width: 80%;
+            padding-top: 2rem;
+            border-radius: 20px;
+            border: 0;
+            box-shadow: 0 5px 30px 0 rgb(0 0 0 / 10%);
+            animation: fadeIn 1s ease both;
+            &::backdrop {
+            animation: fadeIn 1s ease both;
+            background: rgb(255 255 255 / 40%);
+            z-index: 2;
+            backdrop-filter: blur(20px);
+            }
+            .x {
+            filter: grayscale(1);
+            border: none;
+            background: none;
+            position: absolute;
+            top: 15px;
+            right: 10px;
+            transition: ease filter, transform 0.3s;
+            cursor: pointer;
+            transform-origin: center;
+            &:hover {
+                filter: grayscale(0);
+                transform: scale(1.1);
+            }
+            }
+            h2 {
+            font-weight: 600;
+            font-size: 1.5rem;
+            padding-bottom: 1rem;
+            }
+            p {
+            font-size: 1rem;
+            line-height: 1.3rem;
+            padding: 0.5rem 0;
+            a {
+                &:visited {
+                color: rgb(var(--vs-primary));
+                }
+            }
+            }
+        }
+        dialog form input, select{
+            width: 100%;
+            height: 16px;
+            padding: 16px 12px;
+            border-radius: 6px;
+            border: 1px solid rgb(226, 226, 226);
+            color: #4000F9;
+        }
+        dialog form select option{
+            color: #4000F9;
+        }
+        dialog form button{
+            margin-top: 30px;
+            width: 100%;
+            height: 35px;
+            border-radius: 6px;
+            background-color: #4000F9;
+            color: white;
+            font-weight: 500;
+            border: none;
+        }
+    </style>
 </head>
 <body>
+
+    <dialog id="dialog">
+        <h2>Catat Keuangan</h2>
+        <hr> <br>
+        <form action="">
+            <label for="">
+                Nominal
+                <input type="number">
+            </label> <br>
+            <label for="kategori">
+                Keterangan
+                <select name="kategori" id="kategori">
+                    <option value="Masuk">Masuk</option>
+                    <option value="Keluar">Keluar</option>
+                </select>
+            </label>
+            <button type="submit">Simpan</button>
+        </form>
+        <button onclick="window.dialog.close();" aria-label="close" class="x">❌</button>
+      </dialog>
+
+
     <div class="container">
         <div class="akun">
             <img src="logo.svg" alt="">
@@ -31,7 +127,7 @@
                     <span>Target</span>
                     <h3>Rp 4.500.000</h3>
                 </div>
-                <button>Catat</button>
+                <button class="primary" onclick="window.dialog.showModal();">Catat</button>
             </div>
         </div>
 
