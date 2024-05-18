@@ -90,10 +90,10 @@
     <dialog id="dialog">
         <h2>Catat Keuangan</h2>
         <hr> <br>
-        <form action="">
-            <label for="">
+        <form id="keuanganForm">
+            <label for="nominal">
                 Nominal
-                <input type="number">
+                <input type="text" id="nominal" required>
             </label> <br>
             <label for="kategori">
                 Keterangan
@@ -120,7 +120,7 @@
         <div class="saldo">
             <div class="modal">
                 <span>Modal Terkumpul</span>
-                <h1>Rp 2.500.000</h1>
+                <h1 id="totalModal">Rp 0</h1>
             </div>
             <div class="submodal">
                 <div class="target">
@@ -136,19 +136,20 @@
                 <div class="masuk">
                     <ion-icon name="cloud-upload" id="icon"></ion-icon> <br>
                     <span>Total Masuk</span>
-                    <h3>Rp 200.000</h3>
+                    <h3 id="totalMasuk">Rp 0</h3>
                 </div>
                 <div class="keluar">
                     <ion-icon name="cloud-download" id="icon"></ion-icon> <br>
                     <span>Total Masuk</span>
-                    <h3>Rp 200.000</h3>
+                    <h3 id="totalKeluar">Rp 0</h3>
                 </div>
             </div>
 
             <p>List Keuangan</p>
 
-            <div class="histori">
-                <div class="ket">
+            <div class="histori" id="histori">
+                <!-- tampilkan data disini -->
+                <!-- <div class="ket">
                     <ion-icon name="cloud-upload" id="icon-masuk"></ion-icon> <br>
                     <div class="jenis">
                         <div class="jumlah">
@@ -157,67 +158,7 @@
                         </div>
                         <span id="masuk">Masuk</span>
                     </div>
-                </div>
-                <div class="ket">
-                    <ion-icon name="cloud-upload" id="icon-masuk"></ion-icon> <br>
-                    <div class="jenis">
-                        <div class="jumlah">
-                            <span>Rabu, 14 Mei 2024</span>
-                            <h3>Rp 200.000</h3>
-                        </div>
-                        <span id="masuk">Masuk</span>
-                    </div>
-                </div>
-                <div class="ket">
-                    <ion-icon name="cloud-upload" id="icon-masuk"></ion-icon> <br>
-                    <div class="jenis">
-                        <div class="jumlah">
-                            <span>Rabu, 14 Mei 2024</span>
-                            <h3>Rp 200.000</h3>
-                        </div>
-                        <span id="masuk">Masuk</span>
-                    </div>
-                </div>
-                <div class="ket">
-                    <ion-icon name="cloud-upload" id="icon-masuk"></ion-icon> <br>
-                    <div class="jenis">
-                        <div class="jumlah">
-                            <span>Rabu, 14 Mei 2024</span>
-                            <h3>Rp 200.000</h3>
-                        </div>
-                        <span id="masuk">Masuk</span>
-                    </div>
-                </div>
-                <div class="ket">
-                    <ion-icon name="cloud-download" id="icon-keluar"></ion-icon> <br>
-                    <div class="jenis">
-                        <div class="jumlah">
-                            <span>Rabu, 14 Mei 2024</span>
-                            <h3>Rp 200.000</h3>
-                        </div>
-                        <span id="keluar">Keluar</span>
-                    </div>
-                </div>
-                <div class="ket">
-                    <ion-icon name="cloud-upload" id="icon-masuk"></ion-icon> <br>
-                    <div class="jenis">
-                        <div class="jumlah">
-                            <span>Rabu, 14 Mei 2024</span>
-                            <h3>Rp 200.000</h3>
-                        </div>
-                        <span id="masuk">Masuk</span>
-                    </div>
-                </div>
-                <div class="ket">
-                    <ion-icon name="cloud-upload" id="icon-masuk"></ion-icon> <br>
-                    <div class="jenis">
-                        <div class="jumlah">
-                            <span>Rabu, 14 Mei 2024</span>
-                            <h3>Rp 200.000</h3>
-                        </div>
-                        <span id="masuk">Masuk</span>
-                    </div>
-                </div>
+                </div> -->
             </div>
         </div>
     </div>
@@ -226,5 +167,143 @@
 
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+
+    <script>
+        let totalModal = 0;
+        let totalMasuk = 0;
+        let totalKeluar = 0;
+
+        // Memuat data dari localStorage saat halaman dimuat
+        window.addEventListener('DOMContentLoaded', function() {
+            loadEntries();
+        });
+
+        document.getElementById('keuanganForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            createEntry();
+        });
+
+        document.getElementById('nominal').addEventListener('input', function(event) {
+            let value = event.target.value.replace(/\D/g, '');
+            event.target.value = formatRupiah(value);
+        });
+
+        document.getElementById('nominal').addEventListener('blur', function(event) {
+            let value = event.target.value.replace(/\D/g, '');
+            event.target.value = formatRupiah(value, true);
+        });
+
+        function formatRupiah(angka, complete = false) {
+            let numberString = angka.replace(/[^,\d]/g, '').toString();
+            let split = numberString.split(',');
+            let sisa = split[0].length % 3;
+            let rupiah = split[0].substr(0, sisa);
+            let ribuan = split[0].substr(sisa).match(/\d{3}/gi);
+
+            if (ribuan) {
+                let separator = sisa ? '.' : '';
+                rupiah += separator + ribuan.join('.');
+            }
+
+            rupiah = split[1] !== undefined ? rupiah + ',' + split[1] : rupiah;
+
+            // Ensure complete formatting when the input loses focus
+            if (complete && !rupiah.includes('.')) {
+                rupiah = parseInt(angka).toLocaleString('id-ID');
+            }
+
+            return rupiah;
+        }
+
+        function createEntry() {
+            const nominal = parseInt(document.getElementById('nominal').value.replace(/\./g, '').replace(/,/g, ''));
+            const kategori = document.getElementById('kategori').value;
+            const date = new Date().toLocaleDateString('id-ID', {
+                weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+            });
+
+            if (kategori === 'Masuk') {
+                totalModal += nominal;
+                totalMasuk += nominal;
+            } else if (kategori === 'Keluar') {
+                totalModal -= nominal;
+                totalKeluar += nominal;
+            }
+
+            updateTotalModal();
+            updateTotalMasuk();
+            updateTotalKeluar();
+            saveEntry(date, nominal, kategori);
+
+            const entryHTML = `
+                <div class="ket">
+                    <ion-icon name="${kategori === 'Masuk' ? 'cloud-upload' : 'cloud-download'}" id="icon-${kategori.toLowerCase()}"></ion-icon> <br>
+                    <div class="jenis">
+                        <div class="jumlah">
+                            <span>${date}</span>
+                            <h3>Rp ${nominal.toLocaleString('id-ID')}</h3>
+                        </div>
+                        <span id="${kategori.toLowerCase()}">${kategori}</span>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('histori').insertAdjacentHTML('beforeend', entryHTML);
+            document.getElementById('dialog').close();
+            document.getElementById('keuanganForm').reset();
+        }
+
+        function updateTotalModal() {
+            document.getElementById('totalModal').textContent = `Rp ${totalModal.toLocaleString('id-ID')}`;
+        }
+
+        function updateTotalMasuk() {
+            document.getElementById('totalMasuk').textContent = `Rp ${totalMasuk.toLocaleString('id-ID')}`;
+        }
+
+        function updateTotalKeluar() {
+            document.getElementById('totalKeluar').textContent = `Rp ${totalKeluar.toLocaleString('id-ID')}`;
+        }
+
+        function saveEntry(date, nominal, kategori) {
+            let entries = localStorage.getItem('catatanKeuangan');
+            entries = entries ? JSON.parse(entries) : [];
+
+            entries.push({ date, nominal, kategori });
+            localStorage.setItem('catatanKeuangan', JSON.stringify(entries));
+        }
+
+        function loadEntries() {
+            let entries = localStorage.getItem('catatanKeuangan');
+            if (entries) {
+                entries = JSON.parse(entries);
+                entries.forEach(entry => {
+                    const { date, nominal, kategori } = entry;
+                    if (kategori === 'Masuk') {
+                        totalMasuk += nominal;
+                    } else if (kategori === 'Keluar') {
+                        totalKeluar += nominal;
+                    }
+                    const entryHTML = `
+                        <div class="ket">
+                            <ion-icon name="${kategori === 'Masuk' ? 'cloud-upload' : 'cloud-download'}" id="icon-${kategori.toLowerCase()}"></ion-icon> <br>
+                            <div class="jenis">
+                                <div class="jumlah">
+                                    <span>${date}</span>
+                                    <h3>Rp ${nominal.toLocaleString('id-ID')}</h3>
+                                </div>
+                                <span id="${kategori.toLowerCase()}">${kategori}</span>
+                            </div>
+                        </div>
+                    `;
+                    document.getElementById('histori').insertAdjacentHTML('beforeend', entryHTML);
+                });
+                totalModal = totalMasuk - totalKeluar;
+                updateTotalModal();
+                updateTotalMasuk();
+                updateTotalKeluar();
+            }
+        }
+    </script>
 </body>
 </html>
