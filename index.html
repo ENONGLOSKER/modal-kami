@@ -244,13 +244,13 @@
 
             <div class="histori" id="histori">
                 <!-- tampilkan data disini -->
-                <div class="accordion-card" onclick="toggleAccordion(this)">
+                <!-- <div class="accordion-card" onclick="toggleAccordion(this)">
                     <div class="accordion-header">
                         <div class="left-section">
                             <ion-icon name="cloud-download" id="icons"></ion-icon>
                             <div class="info">
                                 <div class="date">12 Aug 2024</div>
-                                <h3 class="amount">Rp 200.000</h3>
+                                <h3 class="amount">Rp 0</h3>
                             </div>
                         </div>
 
@@ -259,7 +259,7 @@
                     <div class="accordion-content">
                         <p>Beli susu barbrand</p>
                     </div>
-                </div>
+                </div> -->
 
             </div>
         </div>
@@ -269,12 +269,15 @@
 
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    <!-- conffeti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
 
-    <!-- update target -->
-     <script>
+    <!-- Update target -->
+    <script>
         // Fungsi untuk menyimpan target ke localStorage
         function saveTargetToLocalStorage(amount) {
             localStorage.setItem('targetAmount', amount);
+            checkTargetAchieved(); // Cek apakah target tercapai setelah update
         }
 
         // Fungsi untuk memuat target dari localStorage
@@ -286,12 +289,12 @@
         }
 
         // Event listener untuk membuka dialog saat <h3> diklik
-        document.getElementById('targetAmount').addEventListener('click', function() {
+        document.getElementById('targetAmount').addEventListener('click', function () {
             document.getElementById('updateDialog').showModal();
         });
 
         // Event listener untuk menangani update data saat dialog ditutup
-        document.getElementById('updateDialog').addEventListener('close', function() {
+        document.getElementById('updateDialog').addEventListener('close', function () {
             const newAmount = document.getElementById('newAmount').value.replace(/\./g, '').replace(/,/g, '');
             if (newAmount) {
                 const formattedAmount = parseInt(newAmount).toLocaleString('id-ID');
@@ -304,46 +307,55 @@
         // Memuat data dari localStorage saat halaman dimuat
         window.addEventListener('DOMContentLoaded', loadTargetFromLocalStorage);
 
-     </script>
-
-    <!-- acording -->
-    <script>
-        function toggleAccordion(element) {
-            const content = element.querySelector('.accordion-content');
-            if (content.style.display === "block") {
-                content.style.display = "none";
-            } else {
-                content.style.display = "block";
+        // Fungsi untuk menampilkan confetti jika target tercapai
+        function checkTargetAchieved() {
+            const target = parseInt(localStorage.getItem('targetAmount') || '0');
+            if (totalModal === target && target > 0) {
+                confetti({
+                    particleCount: 100,
+                    spread: 70,
+                    origin: { y: 0.6 }
+                });
+                alert("Selamat! Target modal telah tercapai!");
             }
         }
     </script>
 
+    <!-- Accordion -->
+    <script>
+        function toggleAccordion(element) {
+            const content = element.querySelector('.accordion-content');
+            content.style.display = content.style.display === "block" ? "none" : "block";
+        }
+    </script>
+
+    <!-- Script utama untuk keuangan -->
     <script>
         let totalModal = 0;
         let totalMasuk = 0;
         let totalKeluar = 0;
 
         // Memuat data dari localStorage saat halaman dimuat
-        window.addEventListener('DOMContentLoaded', function() {
+        window.addEventListener('DOMContentLoaded', function () {
             loadEntries();
         });
 
-        document.getElementById('keuanganForm').addEventListener('submit', function(event) {
+        document.getElementById('keuanganForm').addEventListener('submit', function (event) {
             event.preventDefault();
             createEntry();
         });
-        
-        document.getElementById('nominal').addEventListener('input', function(event) {
+
+        document.getElementById('nominal').addEventListener('input', function (event) {
             let value = event.target.value.replace(/\D/g, '');
             event.target.value = formatRupiah(value);
         });
 
-        document.getElementById('nominal').addEventListener('blur', function(event) {
+        document.getElementById('nominal').addEventListener('blur', function (event) {
             let value = event.target.value.replace(/\D/g, '');
             event.target.value = formatRupiah(value, true);
         });
 
-        // konveris mata uang
+        // Konversi mata uang
         function formatRupiah(angka, complete = false) {
             let numberString = angka.replace(/[^,\d]/g, '').toString();
             let split = numberString.split(',');
@@ -358,16 +370,15 @@
 
             rupiah = split[1] !== undefined ? rupiah + ',' + split[1] : rupiah;
 
-            // Ensure complete formatting when the input loses focus
             if (complete && !rupiah.includes('.')) {
                 rupiah = parseInt(angka).toLocaleString('id-ID');
             }
 
             return rupiah;
         }
+
         // Fungsi untuk membuat entry baru
         function createEntry() {
-            // Mendapatkan nilai dari form input
             const nominalValue = document.getElementById('nominal').value.replace(/\./g, '').replace(/,/g, '');
             const nominal = parseInt(nominalValue);
             const kategori = document.getElementById('kategori').value;
@@ -376,13 +387,11 @@
                 year: 'numeric', month: 'long', day: 'numeric'
             });
 
-            // Memastikan nominal adalah angka valid
             if (isNaN(nominal) || nominal <= 0) {
                 alert("Masukkan nominal yang valid.");
                 return;
             }
 
-            // Update total berdasarkan kategori
             if (kategori === 'Masuk') {
                 totalModal += nominal;
                 totalMasuk += nominal;
@@ -391,12 +400,10 @@
                 totalKeluar += nominal;
             }
 
-            // Update tampilan total
             updateTotalModal();
             updateTotalMasuk();
             updateTotalKeluar();
 
-            // Membuat HTML baru untuk item histori
             const entryHTML = `
                 <div class="accordion-card" onclick="toggleAccordion(this)">
                     <div class="accordion-header">
@@ -415,15 +422,14 @@
                 </div>
             `;
 
-            // Menambahkan entry ke dalam histori
             document.getElementById('histori').insertAdjacentHTML('beforeend', entryHTML);
 
-            // Simpan entry ke localStorage
             saveEntry(date, nominal, kategori, keterangan);
 
-            // Reset form dan tutup dialog
             document.getElementById('keuanganForm').reset();
             document.getElementById('dialog').close();
+
+            checkTargetAchieved(); // Cek apakah target tercapai setelah menambahkan entry baru
         }
 
         // Fungsi untuk menyimpan entry ke localStorage
@@ -437,21 +443,16 @@
 
         // Fungsi untuk menghapus entry individual
         function deleteEntry(event, element, date, nominal, kategori) {
-            event.stopPropagation(); // Mencegah accordion dari toggling ketika link delete ditekan
+            event.stopPropagation();
 
-            // Menampilkan pop-up konfirmasi
             const confirmed = confirm("Apakah Anda yakin ingin menghapus data ini?");
-            
             if (confirmed) {
                 let entries = localStorage.getItem('catatanKeuangan');
                 entries = entries ? JSON.parse(entries) : [];
 
-                // Hapus data berdasarkan parameter
                 entries = entries.filter(entry => !(entry.date === date && entry.nominal === nominal && entry.kategori === kategori));
-
                 localStorage.setItem('catatanKeuangan', JSON.stringify(entries));
 
-                // Update total berdasarkan kategori yang dihapus
                 if (kategori === 'Masuk') {
                     totalModal -= nominal;
                     totalMasuk -= nominal;
@@ -464,16 +465,13 @@
                 updateTotalMasuk();
                 updateTotalKeluar();
 
-                // Hapus elemen card dari tampilan
                 element.closest('.accordion-card').remove();
+
+                checkTargetAchieved(); // Cek apakah target tercapai setelah menghapus entry
             }
         }
 
-        // Memuat data dari localStorage saat halaman dimuat
-        window.addEventListener('DOMContentLoaded', function() {
-            loadEntries();
-        });
-
+        // Fungsi untuk memuat data dari localStorage
         function loadEntries() {
             let entries = localStorage.getItem('catatanKeuangan');
             if (entries) {
@@ -504,67 +502,27 @@
                     `;
                     document.getElementById('histori').insertAdjacentHTML('beforeend', entryHTML);
                 });
-                totalModal = totalMasuk - totalKeluar;
                 updateTotalModal();
                 updateTotalMasuk();
                 updateTotalKeluar();
             }
         }
 
-
+        // Fungsi untuk memperbarui tampilan total modal
         function updateTotalModal() {
             document.getElementById('totalModal').textContent = `Rp ${totalModal.toLocaleString('id-ID')}`;
         }
 
+        // Fungsi untuk memperbarui tampilan total masuk
         function updateTotalMasuk() {
             document.getElementById('totalMasuk').textContent = `Rp ${totalMasuk.toLocaleString('id-ID')}`;
         }
 
+        // Fungsi untuk memperbarui tampilan total keluar
         function updateTotalKeluar() {
             document.getElementById('totalKeluar').textContent = `Rp ${totalKeluar.toLocaleString('id-ID')}`;
         }
-
-        function saveEntry(date, nominal, kategori) {
-            let entries = localStorage.getItem('catatanKeuangan');
-            entries = entries ? JSON.parse(entries) : [];
-
-            entries.push({ date, nominal, kategori });
-            localStorage.setItem('catatanKeuangan', JSON.stringify(entries));
-        }
-
-        function loadEntries() {
-            let entries = localStorage.getItem('catatanKeuangan');
-            if (entries) {
-                entries = JSON.parse(entries);
-                entries.forEach(entry => {
-                    const { date, nominal, kategori } = entry;
-                    if (kategori === 'Masuk') {
-                        totalMasuk += nominal;
-                    } else if (kategori === 'Keluar') {
-                        totalKeluar += nominal;
-                    }
-                    const entryHTML = `
-                        <div class="ket">
-                            <ion-icon name="${kategori === 'Masuk' ? 'cloud-download' : 'cloud-upload'}" id="icon-${kategori.toLowerCase()}"></ion-icon> <br>
-                            <div class="jenis">
-                                <div class="jumlah">
-                                    <span>${date}</span>
-                                    <h3>Rp ${nominal.toLocaleString('id-ID')}</h3>
-                                </div>
-                                <span id="${kategori.toLowerCase()}">${kategori}</span>
-                            </div>
-                        </div>
-                    `;
-                    document.getElementById('histori').insertAdjacentHTML('beforeend', entryHTML);
-                });
-                totalModal = totalMasuk - totalKeluar;
-                updateTotalModal();
-                updateTotalMasuk();
-                updateTotalKeluar();
-            }
-        }
     </script>
-
     <!-- reset data -->
     <script>
         // Event listener untuk tombol reset
