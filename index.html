@@ -187,6 +187,18 @@
         <button onclick="window.dialog.close();" aria-label="close" class="x">❌</button>
     </dialog>
 
+    <!-- Pop-up Dialog -->
+<dialog id="updateDialog">
+    <form method="dialog">
+        <label for="newAmount" style="margin-bottom: 10px;">Masukkan nominal baru:</label>
+        <input type="text" id="newAmount" name="newAmount" />
+        <menu>
+            <button type="submit">Update</button>
+            <button type="button" onclick="document.getElementById('updateDialog').close();">Cancel</button>
+        </menu>
+    </form>
+</dialog>
+
 
     <div class="container">
         <div class="akun">
@@ -205,7 +217,7 @@
             <div class="submodal">
                 <div class="target">
                     <span>Target</span>
-                    <h3>Rp 4.500.000</h3>
+                    <h3 id="targetAmount">Rp 0</h3>
                 </div>
                 <button class="primary" onclick="window.dialog.showModal();">Catat</button>
             </div>
@@ -257,6 +269,42 @@
 
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+
+    <!-- update target -->
+     <script>
+        // Fungsi untuk menyimpan target ke localStorage
+        function saveTargetToLocalStorage(amount) {
+            localStorage.setItem('targetAmount', amount);
+        }
+
+        // Fungsi untuk memuat target dari localStorage
+        function loadTargetFromLocalStorage() {
+            const storedAmount = localStorage.getItem('targetAmount');
+            if (storedAmount) {
+                document.getElementById('targetAmount').textContent = `Rp ${parseInt(storedAmount).toLocaleString('id-ID')}`;
+            }
+        }
+
+        // Event listener untuk membuka dialog saat <h3> diklik
+        document.getElementById('targetAmount').addEventListener('click', function() {
+            document.getElementById('updateDialog').showModal();
+        });
+
+        // Event listener untuk menangani update data saat dialog ditutup
+        document.getElementById('updateDialog').addEventListener('close', function() {
+            const newAmount = document.getElementById('newAmount').value.replace(/\./g, '').replace(/,/g, '');
+            if (newAmount) {
+                const formattedAmount = parseInt(newAmount).toLocaleString('id-ID');
+                document.getElementById('targetAmount').textContent = `Rp ${formattedAmount}`;
+                saveTargetToLocalStorage(newAmount); // Simpan nilai yang diperbarui ke localStorage
+            }
+            document.getElementById('newAmount').value = ''; // Reset input
+        });
+
+        // Memuat data dari localStorage saat halaman dimuat
+        window.addEventListener('DOMContentLoaded', loadTargetFromLocalStorage);
+
+     </script>
 
     <!-- acording -->
     <script>
@@ -516,6 +564,7 @@
             }
         }
     </script>
+
     <!-- reset data -->
     <script>
         // Event listener untuk tombol reset
