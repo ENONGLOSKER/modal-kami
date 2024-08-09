@@ -62,13 +62,16 @@
             }
             }
         }
-        dialog form input, select{
+        dialog form input, select, textarea{
             width: 100%;
             height: 16px;
             padding: 16px 12px;
             border-radius: 6px;
             border: 1px solid rgb(226, 226, 226);
             color: #4000F9;
+        }
+        dialog form textarea{
+            height: 80px;
         }
         dialog form select option{
             color: #4000F9;
@@ -83,6 +86,79 @@
             font-weight: 500;
             border: none;
         }
+
+
+        /* acording */
+        .accordion-card {
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+
+        .accordion-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+        }
+
+        .icon {
+            width: 24px;
+            height: 24px;
+            background-color: #ccc;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .info {
+            display: flex;
+            flex-direction: column;
+            margin-left: 16px;
+        }
+        .amount {
+            color: #000000;
+        }
+
+        .text-right {
+            font-weight: 500;
+            color: #17d302;;
+        }
+
+        .left-section{
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .left-section #icons{
+            background-color: #17d302;
+            color: white;
+            width: 24px;
+            height: 24px;
+            padding: 8px;
+            border-radius: 50px;
+        }
+        .left-section .date{
+            font-size: 12px;
+            color: rgb(99, 99, 99);
+        }
+
+        .accordion-content {
+            display: none;
+            margin-top: 16px;
+        }
+
+        .accordion-content p {
+            margin: 4px 0;
+            color: #000000;
+        }
+        #ktg{
+            text-decoration: none;
+        }
+    </style>
     </style>
 </head>
 <body>
@@ -96,16 +172,20 @@
                 <input type="text" id="nominal" required>
             </label> <br>
             <label for="kategori">
-                Keterangan
+                Jenis
                 <select name="kategori" id="kategori">
                     <option value="Masuk">Masuk</option>
                     <option value="Keluar">Keluar</option>
                 </select>
             </label>
+            <label for="keterangan">
+                Keterangan
+                <textarea id="keterangan" required></textarea>
+            </label> <br>
             <button type="submit">Simpan</button>
         </form>
         <button onclick="window.dialog.close();" aria-label="close" class="x">❌</button>
-      </dialog>
+    </dialog>
 
 
     <div class="container">
@@ -134,31 +214,41 @@
         <div class="list">
             <div class="list-menu">
                 <div class="masuk">
-                    <ion-icon name="cloud-upload" id="icon"></ion-icon> <br>
+                    <ion-icon name="cloud-download" id="icon"></ion-icon> <br>
                     <span>Total Masuk</span>
                     <h3 id="totalMasuk">Rp 0</h3>
                 </div>
                 <div class="keluar">
-                    <ion-icon name="cloud-download" id="icon"></ion-icon> <br>
+                    <ion-icon name="cloud-upload" id="icon"></ion-icon> <br>
                     <span>Total Keluar</span>
                     <h3 id="totalKeluar">Rp 0</h3>
                 </div>
             </div>
 
-            <p>List Keuangan</p>
+            <div class="detail" style="display: flex; justify-content: space-between; align-items: center; margin: 25px 0;">
+                <p>List Keuangan</p>
+                <a id="resetData" style="color: rgb(255, 194, 82); cursor: pointer;">Reset All Data</a>
+            </div>
 
             <div class="histori" id="histori">
                 <!-- tampilkan data disini -->
-                <!-- <div class="ket">
-                    <ion-icon name="cloud-upload" id="icon-masuk"></ion-icon> <br>
-                    <div class="jenis">
-                        <div class="jumlah">
-                            <span>Rabu, 14 Mei 2024</span>
-                            <h3>Rp 200.000</h3>
+                <div class="accordion-card" onclick="toggleAccordion(this)">
+                    <div class="accordion-header">
+                        <div class="left-section">
+                            <ion-icon name="cloud-download" id="icons"></ion-icon>
+                            <div class="info">
+                                <div class="date">12 Aug 2024</div>
+                                <h3 class="amount">Rp 200.000</h3>
+                            </div>
                         </div>
-                        <span id="masuk">Masuk</span>
+
+                        <a href="#" class="text-right" id="ktg" onclick="deleteEntry(event, this, '12 Aug 2024', 200000, 'Masuk')">Masuk</a>
                     </div>
-                </div> -->
+                    <div class="accordion-content">
+                        <p>Beli susu barbrand</p>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>
@@ -167,6 +257,18 @@
 
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+
+    <!-- acording -->
+    <script>
+        function toggleAccordion(element) {
+            const content = element.querySelector('.accordion-content');
+            if (content.style.display === "block") {
+                content.style.display = "none";
+            } else {
+                content.style.display = "block";
+            }
+        }
+    </script>
 
     <script>
         let totalModal = 0;
@@ -182,7 +284,7 @@
             event.preventDefault();
             createEntry();
         });
-
+        
         document.getElementById('nominal').addEventListener('input', function(event) {
             let value = event.target.value.replace(/\D/g, '');
             event.target.value = formatRupiah(value);
@@ -193,6 +295,7 @@
             event.target.value = formatRupiah(value, true);
         });
 
+        // konveris mata uang
         function formatRupiah(angka, complete = false) {
             let numberString = angka.replace(/[^,\d]/g, '').toString();
             let split = numberString.split(',');
@@ -214,14 +317,24 @@
 
             return rupiah;
         }
-
+        // Fungsi untuk membuat entry baru
         function createEntry() {
-            const nominal = parseInt(document.getElementById('nominal').value.replace(/\./g, '').replace(/,/g, ''));
+            // Mendapatkan nilai dari form input
+            const nominalValue = document.getElementById('nominal').value.replace(/\./g, '').replace(/,/g, '');
+            const nominal = parseInt(nominalValue);
             const kategori = document.getElementById('kategori').value;
+            const keterangan = document.getElementById('keterangan').value;
             const date = new Date().toLocaleDateString('id-ID', {
-                weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+                year: 'numeric', month: 'long', day: 'numeric'
             });
 
+            // Memastikan nominal adalah angka valid
+            if (isNaN(nominal) || nominal <= 0) {
+                alert("Masukkan nominal yang valid.");
+                return;
+            }
+
+            // Update total berdasarkan kategori
             if (kategori === 'Masuk') {
                 totalModal += nominal;
                 totalMasuk += nominal;
@@ -230,28 +343,126 @@
                 totalKeluar += nominal;
             }
 
+            // Update tampilan total
             updateTotalModal();
             updateTotalMasuk();
             updateTotalKeluar();
-            saveEntry(date, nominal, kategori);
 
+            // Membuat HTML baru untuk item histori
             const entryHTML = `
-                <div class="ket">
-                    <ion-icon name="${kategori === 'Masuk' ? 'cloud-upload' : 'cloud-download'}" id="icon-${kategori.toLowerCase()}"></ion-icon> <br>
-                    <div class="jenis">
-                        <div class="jumlah">
-                            <span>${date}</span>
-                            <h3>Rp ${nominal.toLocaleString('id-ID')}</h3>
+                <div class="accordion-card" onclick="toggleAccordion(this)">
+                    <div class="accordion-header">
+                        <div class="left-section">
+                            <ion-icon name="${kategori === 'Masuk' ? 'cloud-download' : 'cloud-upload'}" id="icons"></ion-icon>
+                            <div class="info">
+                                <div class="date">${date}</div>
+                                <h3 class="amount">Rp ${nominal.toLocaleString('id-ID')}</h3>
+                            </div>
                         </div>
-                        <span id="${kategori.toLowerCase()}">${kategori}</span>
+                        <a href="#" class="text-right" id="ktg" onclick="deleteEntry(event, this, '${date}', ${nominal}, '${kategori}')">${kategori}</a>
+                    </div>
+                    <div class="accordion-content">
+                        <p>${keterangan}</p>
                     </div>
                 </div>
             `;
 
+            // Menambahkan entry ke dalam histori
             document.getElementById('histori').insertAdjacentHTML('beforeend', entryHTML);
-            document.getElementById('dialog').close();
+
+            // Simpan entry ke localStorage
+            saveEntry(date, nominal, kategori, keterangan);
+
+            // Reset form dan tutup dialog
             document.getElementById('keuanganForm').reset();
+            document.getElementById('dialog').close();
         }
+
+        // Fungsi untuk menyimpan entry ke localStorage
+        function saveEntry(date, nominal, kategori, keterangan) {
+            let entries = localStorage.getItem('catatanKeuangan');
+            entries = entries ? JSON.parse(entries) : [];
+
+            entries.push({ date, nominal, kategori, keterangan });
+            localStorage.setItem('catatanKeuangan', JSON.stringify(entries));
+        }
+
+        // Fungsi untuk menghapus entry individual
+        function deleteEntry(event, element, date, nominal, kategori) {
+            event.stopPropagation(); // Mencegah accordion dari toggling ketika link delete ditekan
+
+            // Menampilkan pop-up konfirmasi
+            const confirmed = confirm("Apakah Anda yakin ingin menghapus data ini?");
+            
+            if (confirmed) {
+                let entries = localStorage.getItem('catatanKeuangan');
+                entries = entries ? JSON.parse(entries) : [];
+
+                // Hapus data berdasarkan parameter
+                entries = entries.filter(entry => !(entry.date === date && entry.nominal === nominal && entry.kategori === kategori));
+
+                localStorage.setItem('catatanKeuangan', JSON.stringify(entries));
+
+                // Update total berdasarkan kategori yang dihapus
+                if (kategori === 'Masuk') {
+                    totalModal -= nominal;
+                    totalMasuk -= nominal;
+                } else if (kategori === 'Keluar') {
+                    totalModal += nominal;
+                    totalKeluar -= nominal;
+                }
+
+                updateTotalModal();
+                updateTotalMasuk();
+                updateTotalKeluar();
+
+                // Hapus elemen card dari tampilan
+                element.closest('.accordion-card').remove();
+            }
+        }
+
+        // Memuat data dari localStorage saat halaman dimuat
+        window.addEventListener('DOMContentLoaded', function() {
+            loadEntries();
+        });
+
+        function loadEntries() {
+            let entries = localStorage.getItem('catatanKeuangan');
+            if (entries) {
+                entries = JSON.parse(entries);
+                entries.forEach(entry => {
+                    const { date, nominal, kategori, keterangan } = entry;
+                    if (kategori === 'Masuk') {
+                        totalMasuk += nominal;
+                    } else if (kategori === 'Keluar') {
+                        totalKeluar += nominal;
+                    }
+                    const entryHTML = `
+                        <div class="accordion-card" onclick="toggleAccordion(this)">
+                            <div class="accordion-header">
+                                <div class="left-section">
+                                    <ion-icon name="${kategori === 'Masuk' ? 'cloud-download' : 'cloud-upload'}" id="icons"></ion-icon>
+                                    <div class="info">
+                                        <div class="date">${date}</div>
+                                        <h3 class="amount">Rp ${nominal.toLocaleString('id-ID')}</h3>
+                                    </div>
+                                </div>
+                                <a href="#" class="text-right" id="ktg" onclick="deleteEntry(event, this, '${date}', ${nominal}, '${kategori}')">${kategori}</a>
+                            </div>
+                            <div class="accordion-content">
+                                <p>${keterangan}</p>
+                            </div>
+                        </div>
+                    `;
+                    document.getElementById('histori').insertAdjacentHTML('beforeend', entryHTML);
+                });
+                totalModal = totalMasuk - totalKeluar;
+                updateTotalModal();
+                updateTotalMasuk();
+                updateTotalKeluar();
+            }
+        }
+
 
         function updateTotalModal() {
             document.getElementById('totalModal').textContent = `Rp ${totalModal.toLocaleString('id-ID')}`;
@@ -286,7 +497,7 @@
                     }
                     const entryHTML = `
                         <div class="ket">
-                            <ion-icon name="${kategori === 'Masuk' ? 'cloud-upload' : 'cloud-download'}" id="icon-${kategori.toLowerCase()}"></ion-icon> <br>
+                            <ion-icon name="${kategori === 'Masuk' ? 'cloud-download' : 'cloud-upload'}" id="icon-${kategori.toLowerCase()}"></ion-icon> <br>
                             <div class="jenis">
                                 <div class="jumlah">
                                     <span>${date}</span>
@@ -305,5 +516,80 @@
             }
         }
     </script>
+    <!-- reset data -->
+    <script>
+        // Event listener untuk tombol reset
+        document.getElementById('resetData').addEventListener('click', function() {
+            // Menampilkan pop-up konfirmasi
+            const confirmed = confirm("Apakah Anda yakin ingin menghapus semua data?");
+            
+            // Jika pengguna mengkonfirmasi penghapusan
+            if (confirmed) {
+                // Menghapus semua data dari localStorage
+                localStorage.removeItem('catatanKeuangan');
+
+                // Menghapus data dari tampilan
+                document.getElementById('histori').innerHTML = '';
+
+                // Mengatur ulang total modal, total masuk, dan total keluar
+                totalModal = 0;
+                totalMasuk = 0;
+                totalKeluar = 0;
+
+                // Memperbarui tampilan total modal, masuk, dan keluar
+                updateTotalModal();
+                updateTotalMasuk();
+                updateTotalKeluar();
+            }
+        });
+
+        function updateTotalModal() {
+            document.getElementById('totalModal').textContent = `Rp ${totalModal.toLocaleString('id-ID')}`;
+        }
+
+        function updateTotalMasuk() {
+            document.getElementById('totalMasuk').textContent = `Rp ${totalMasuk.toLocaleString('id-ID')}`;
+        }
+
+        function updateTotalKeluar() {
+            document.getElementById('totalKeluar').textContent = `Rp ${totalKeluar.toLocaleString('id-ID')}`;
+        }
+    </script>
+
+    <!-- hapus satu data -->
+     <script>
+        function deleteEntry(event, element, date, nominal, kategori) {
+    event.stopPropagation(); // Mencegah accordion dari toggling ketika link delete ditekan
+
+    // Menampilkan pop-up konfirmasi
+    const confirmed = confirm("Apakah Anda yakin ingin menghapus data ini?");
+    
+    if (confirmed) {
+        let entries = localStorage.getItem('catatanKeuangan');
+        entries = entries ? JSON.parse(entries) : [];
+
+        // Hapus data berdasarkan parameter
+        entries = entries.filter(entry => !(entry.date === date && entry.nominal === nominal && entry.kategori === kategori));
+
+        localStorage.setItem('catatanKeuangan', JSON.stringify(entries));
+
+        if (kategori === 'Masuk') {
+            totalModal -= nominal;
+            totalMasuk -= nominal;
+        } else if (kategori === 'Keluar') {
+            totalModal += nominal;
+            totalKeluar -= nominal;
+        }
+
+        updateTotalModal();
+        updateTotalMasuk();
+        updateTotalKeluar();
+
+        // Hapus elemen card dari tampilan
+        element.closest('.accordion-card').remove();
+    }
+}
+
+     </script>
 </body>
 </html>
