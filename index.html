@@ -163,6 +163,7 @@
 </head>
 <body>
 
+    <!-- form set catatan -->
     <dialog id="dialog">
         <h2>Catat Keuangan</h2>
         <hr> <br>
@@ -187,28 +188,29 @@
         <button onclick="window.dialog.close();" aria-label="close" class="x">❌</button>
     </dialog>
 
-    <!-- Pop-up Dialog -->
-<dialog id="updateDialog">
-    <form method="dialog">
-        <label for="newAmount" style="margin-bottom: 10px;">Masukkan nominal baru:</label>
-        <input type="text" id="newAmount" name="newAmount" />
-        <menu>
-            <button type="submit">Update</button>
-            <button type="button" onclick="document.getElementById('updateDialog').close();">Cancel</button>
-        </menu>
-    </form>
-</dialog>
+    <!-- form set target modal -->
+    <dialog id="updateDialog">
+        <form method="dialog">
+            <label for="newAmount" style="margin-bottom: 10px;">Masukkan nominal baru:</label>
+            <input type="text" id="newAmount" name="newAmount" />
+            <menu>
+                <button type="submit">Update</button>
+                <button type="button" onclick="document.getElementById('updateDialog').close();">Cancel</button>
+            </menu>
+        </form>
+    </dialog>
 
 
     <div class="container">
         <div class="akun">
             <img src="logo.svg" alt="">
-            <a href="">
+            <a href="" style="">
                 <ion-icon name="finger-print" style="width: 20px; height: 25px;"></ion-icon>
                 <span>Sign in</span>
             </a>
         </div>
 
+        <!-- info keuangan -->
         <div class="saldo">
             <div class="modal">
                 <span>Modal Terkumpul</span>
@@ -223,6 +225,7 @@
             </div>
         </div>
 
+        <!-- detail keuangan -->
         <div class="list">
             <div class="list-menu">
                 <div class="masuk">
@@ -266,20 +269,32 @@
     </div>
 
 
-
+    <!-- cdn ionic icon -->
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+
     <!-- conffeti -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
 
-    <!-- Update target -->
+    <!-- code utama -->
     <script>
+        let totalModal = 0;
+        let totalMasuk = 0;
+        let totalKeluar = 0;
+    
+        // Memuat data dari localStorage saat halaman dimuat
+        window.addEventListener('DOMContentLoaded', function () {
+            loadTotalModalFromLocalStorage();
+            loadEntries();
+            loadTargetFromLocalStorage();
+        });
+    
         // Fungsi untuk menyimpan target ke localStorage
         function saveTargetToLocalStorage(amount) {
             localStorage.setItem('targetAmount', amount);
-            checkTargetAchieved(); // Cek apakah target tercapai setelah update
+            checkTargetAchieved();
         }
-
+    
         // Fungsi untuk memuat target dari localStorage
         function loadTargetFromLocalStorage() {
             const storedAmount = localStorage.getItem('targetAmount');
@@ -287,26 +302,23 @@
                 document.getElementById('targetAmount').textContent = `Rp ${parseInt(storedAmount).toLocaleString('id-ID')}`;
             }
         }
-
+    
         // Event listener untuk membuka dialog saat <h3> diklik
         document.getElementById('targetAmount').addEventListener('click', function () {
             document.getElementById('updateDialog').showModal();
         });
-
+    
         // Event listener untuk menangani update data saat dialog ditutup
         document.getElementById('updateDialog').addEventListener('close', function () {
             const newAmount = document.getElementById('newAmount').value.replace(/\./g, '').replace(/,/g, '');
             if (newAmount) {
                 const formattedAmount = parseInt(newAmount).toLocaleString('id-ID');
                 document.getElementById('targetAmount').textContent = `Rp ${formattedAmount}`;
-                saveTargetToLocalStorage(newAmount); // Simpan nilai yang diperbarui ke localStorage
+                saveTargetToLocalStorage(newAmount);
             }
-            document.getElementById('newAmount').value = ''; // Reset input
+            document.getElementById('newAmount').value = '';
         });
-
-        // Memuat data dari localStorage saat halaman dimuat
-        window.addEventListener('DOMContentLoaded', loadTargetFromLocalStorage);
-
+    
         // Fungsi untuk menampilkan confetti jika target tercapai
         function checkTargetAchieved() {
             const target = parseInt(localStorage.getItem('targetAmount') || '0');
@@ -319,42 +331,30 @@
                 alert("Selamat! Target modal telah tercapai!");
             }
         }
-    </script>
-
-    <!-- Accordion -->
-    <script>
+    
+        // Fungsi untuk toggle Accordion
         function toggleAccordion(element) {
             const content = element.querySelector('.accordion-content');
             content.style.display = content.style.display === "block" ? "none" : "block";
         }
-    </script>
-
-    <!-- Script utama untuk keuangan -->
-    <script>
-        let totalModal = 0;
-        let totalMasuk = 0;
-        let totalKeluar = 0;
-
-        // Memuat data dari localStorage saat halaman dimuat
-        window.addEventListener('DOMContentLoaded', function () {
-            loadEntries();
-        });
-
+    
+        // Event listener untuk form submit
         document.getElementById('keuanganForm').addEventListener('submit', function (event) {
             event.preventDefault();
             createEntry();
         });
-
+    
+        // Format input nominal
         document.getElementById('nominal').addEventListener('input', function (event) {
             let value = event.target.value.replace(/\D/g, '');
             event.target.value = formatRupiah(value);
         });
-
+    
         document.getElementById('nominal').addEventListener('blur', function (event) {
             let value = event.target.value.replace(/\D/g, '');
             event.target.value = formatRupiah(value, true);
         });
-
+    
         // Konversi mata uang
         function formatRupiah(angka, complete = false) {
             let numberString = angka.replace(/[^,\d]/g, '').toString();
@@ -362,21 +362,21 @@
             let sisa = split[0].length % 3;
             let rupiah = split[0].substr(0, sisa);
             let ribuan = split[0].substr(sisa).match(/\d{3}/gi);
-
+    
             if (ribuan) {
                 let separator = sisa ? '.' : '';
                 rupiah += separator + ribuan.join('.');
             }
-
+    
             rupiah = split[1] !== undefined ? rupiah + ',' + split[1] : rupiah;
-
+    
             if (complete && !rupiah.includes('.')) {
                 rupiah = parseInt(angka).toLocaleString('id-ID');
             }
-
+    
             return rupiah;
         }
-
+    
         // Fungsi untuk membuat entry baru
         function createEntry() {
             const nominalValue = document.getElementById('nominal').value.replace(/\./g, '').replace(/,/g, '');
@@ -386,12 +386,12 @@
             const date = new Date().toLocaleDateString('id-ID', {
                 year: 'numeric', month: 'long', day: 'numeric'
             });
-
+    
             if (isNaN(nominal) || nominal <= 0) {
                 alert("Masukkan nominal yang valid.");
                 return;
             }
-
+    
             if (kategori === 'Masuk') {
                 totalModal += nominal;
                 totalMasuk += nominal;
@@ -399,11 +399,11 @@
                 totalModal -= nominal;
                 totalKeluar += nominal;
             }
-
+    
             updateTotalModal();
             updateTotalMasuk();
             updateTotalKeluar();
-
+    
             const entryHTML = `
                 <div class="accordion-card" onclick="toggleAccordion(this)">
                     <div class="accordion-header">
@@ -421,38 +421,38 @@
                     </div>
                 </div>
             `;
-
+    
             document.getElementById('histori').insertAdjacentHTML('beforeend', entryHTML);
-
+    
             saveEntry(date, nominal, kategori, keterangan);
-
+    
             document.getElementById('keuanganForm').reset();
             document.getElementById('dialog').close();
-
-            checkTargetAchieved(); // Cek apakah target tercapai setelah menambahkan entry baru
+    
+            checkTargetAchieved();
         }
-
+    
         // Fungsi untuk menyimpan entry ke localStorage
         function saveEntry(date, nominal, kategori, keterangan) {
             let entries = localStorage.getItem('catatanKeuangan');
             entries = entries ? JSON.parse(entries) : [];
-
+    
             entries.push({ date, nominal, kategori, keterangan });
             localStorage.setItem('catatanKeuangan', JSON.stringify(entries));
         }
-
+    
         // Fungsi untuk menghapus entry individual
         function deleteEntry(event, element, date, nominal, kategori) {
             event.stopPropagation();
-
+    
             const confirmed = confirm("Apakah Anda yakin ingin menghapus data ini?");
             if (confirmed) {
                 let entries = localStorage.getItem('catatanKeuangan');
                 entries = entries ? JSON.parse(entries) : [];
-
+    
                 entries = entries.filter(entry => !(entry.date === date && entry.nominal === nominal && entry.kategori === kategori));
                 localStorage.setItem('catatanKeuangan', JSON.stringify(entries));
-
+    
                 if (kategori === 'Masuk') {
                     totalModal -= nominal;
                     totalMasuk -= nominal;
@@ -460,17 +460,17 @@
                     totalModal += nominal;
                     totalKeluar -= nominal;
                 }
-
+    
                 updateTotalModal();
                 updateTotalMasuk();
                 updateTotalKeluar();
-
+    
                 element.closest('.accordion-card').remove();
-
-                checkTargetAchieved(); // Cek apakah target tercapai setelah menghapus entry
+    
+                checkTargetAchieved();
             }
         }
-
+    
         // Fungsi untuk memuat data dari localStorage
         function loadEntries() {
             let entries = localStorage.getItem('catatanKeuangan');
@@ -487,19 +487,34 @@
                         <div class="accordion-card" onclick="toggleAccordion(this)">
                             <div class="accordion-header">
                                 <div class="left-section">
-                                    <ion-icon name="${kategori === 'Masuk' ? 'cloud-download' : 'cloud-upload'}" id="icons"></ion-icon>
+                                    <ion-icon name="${kategori === 'Masuk' ? 'cloud-download' : 'cloud-upload'}" 
+                                            id="icons" 
+                                            style="background-color: ${kategori === 'Masuk' ? '#17d302' : '#e6032d'}; 
+                                                    color: white; 
+                                                    width: 24px; 
+                                                    height: 24px; 
+                                                    padding: 8px; 
+                                                    border-radius: 50px;">
+                                    </ion-icon>
                                     <div class="info">
                                         <div class="date">${date}</div>
                                         <h3 class="amount">Rp ${nominal.toLocaleString('id-ID')}</h3>
                                     </div>
                                 </div>
-                                <a href="#" class="text-right" id="ktg" onclick="deleteEntry(event, this, '${date}', ${nominal}, '${kategori}')">${kategori}</a>
+                                <a href="#" class="text-right" 
+                                id="ktg" 
+                                style="font-weight: 500; 
+                                        color: ${kategori === 'Masuk' ? '#17d302' : '#e6032d'};" 
+                                onclick="deleteEntry(event, this, '${date}', ${nominal}, '${kategori}')">
+                                ${kategori}
+                                </a>
                             </div>
                             <div class="accordion-content">
                                 <p>${keterangan}</p>
                             </div>
                         </div>
                     `;
+
                     document.getElementById('histori').insertAdjacentHTML('beforeend', entryHTML);
                 });
                 updateTotalModal();
@@ -507,96 +522,50 @@
                 updateTotalKeluar();
             }
         }
-
+    
+        // Fungsi untuk memuat total modal dari localStorage
+        function loadTotalModalFromLocalStorage() {
+            const storedTotalModal = localStorage.getItem('totalModal');
+            if (storedTotalModal) {
+                totalModal = parseInt(storedTotalModal);
+                updateTotalModal();
+            }
+        }
+    
         // Fungsi untuk memperbarui tampilan total modal
         function updateTotalModal() {
             document.getElementById('totalModal').textContent = `Rp ${totalModal.toLocaleString('id-ID')}`;
+            localStorage.setItem('totalModal', totalModal);
         }
-
+    
         // Fungsi untuk memperbarui tampilan total masuk
         function updateTotalMasuk() {
             document.getElementById('totalMasuk').textContent = `Rp ${totalMasuk.toLocaleString('id-ID')}`;
         }
-
+    
         // Fungsi untuk memperbarui tampilan total keluar
         function updateTotalKeluar() {
             document.getElementById('totalKeluar').textContent = `Rp ${totalKeluar.toLocaleString('id-ID')}`;
         }
-    </script>
-    <!-- reset data -->
-    <script>
-        // Event listener untuk tombol reset
-        document.getElementById('resetData').addEventListener('click', function() {
-            // Menampilkan pop-up konfirmasi
-            const confirmed = confirm("Apakah Anda yakin ingin menghapus semua data?");
-            
-            // Jika pengguna mengkonfirmasi penghapusan
+    
+        // Fungsi untuk mereset semua data
+        function resetData() {
+            const confirmed = confirm("Apakah Anda yakin ingin mereset semua data?");
             if (confirmed) {
-                // Menghapus semua data dari localStorage
-                localStorage.removeItem('catatanKeuangan');
-
-                // Menghapus data dari tampilan
+                localStorage.clear();
                 document.getElementById('histori').innerHTML = '';
-
-                // Mengatur ulang total modal, total masuk, dan total keluar
                 totalModal = 0;
                 totalMasuk = 0;
                 totalKeluar = 0;
-
-                // Memperbarui tampilan total modal, masuk, dan keluar
                 updateTotalModal();
                 updateTotalMasuk();
                 updateTotalKeluar();
             }
-        });
-
-        function updateTotalModal() {
-            document.getElementById('totalModal').textContent = `Rp ${totalModal.toLocaleString('id-ID')}`;
         }
-
-        function updateTotalMasuk() {
-            document.getElementById('totalMasuk').textContent = `Rp ${totalMasuk.toLocaleString('id-ID')}`;
-        }
-
-        function updateTotalKeluar() {
-            document.getElementById('totalKeluar').textContent = `Rp ${totalKeluar.toLocaleString('id-ID')}`;
-        }
-    </script>
-
-    <!-- hapus satu data -->
-     <script>
-        function deleteEntry(event, element, date, nominal, kategori) {
-    event.stopPropagation(); // Mencegah accordion dari toggling ketika link delete ditekan
-
-    // Menampilkan pop-up konfirmasi
-    const confirmed = confirm("Apakah Anda yakin ingin menghapus data ini?");
     
-    if (confirmed) {
-        let entries = localStorage.getItem('catatanKeuangan');
-        entries = entries ? JSON.parse(entries) : [];
-
-        // Hapus data berdasarkan parameter
-        entries = entries.filter(entry => !(entry.date === date && entry.nominal === nominal && entry.kategori === kategori));
-
-        localStorage.setItem('catatanKeuangan', JSON.stringify(entries));
-
-        if (kategori === 'Masuk') {
-            totalModal -= nominal;
-            totalMasuk -= nominal;
-        } else if (kategori === 'Keluar') {
-            totalModal += nominal;
-            totalKeluar -= nominal;
-        }
-
-        updateTotalModal();
-        updateTotalMasuk();
-        updateTotalKeluar();
-
-        // Hapus elemen card dari tampilan
-        element.closest('.accordion-card').remove();
-    }
-}
-
-     </script>
+        // Event listener untuk tombol Reset Data
+        document.getElementById('resetData').addEventListener('click', resetData);
+    </script>
+      
 </body>
 </html>
