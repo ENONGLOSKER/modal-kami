@@ -105,6 +105,24 @@ body{
     margin-bottom: 5px;
 }
 .list .list-menu .keluar #icon{
+    animation: bounce 2s infinite;
+}
+.list .list-menu .masuk #icon{
+    animation: bounce 2.5s infinite;
+}
+/* Animasi memantul */
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0); /* Posisi awal dan akhir */
+    }
+    40% {
+        transform: translateY(-8px); /* Pantulan ke atas */
+    }
+    60% {
+        transform: translateY(-10px); /* Pantulan sedikit lebih rendah */
+    }
+}
+.list .list-menu .keluar #icon{
     background-color: #e6032d;
 }
 .list .list-menu span{
