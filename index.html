@@ -9,6 +9,8 @@
     <link rel="icon" href="icon.svg">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+
     <style>
        :root {
             --vs-primary: 29 92 255;
@@ -656,6 +658,48 @@
     
         // Event listener untuk tombol Reset Data
         document.getElementById('resetData').addEventListener('click', resetData);
+
+
+        if ("serviceWorker" in navigator) {
+            window.addEventListener("load", function() {
+                navigator.serviceWorker.register("service-worker.js")
+                .then(function(registration) {
+                    console.log("ServiceWorker registration successful with scope: ", registration.scope);
+                }, function(err) {
+                    console.log("ServiceWorker registration failed: ", err);
+                });
+            });
+        }
+
+        let deferredPrompt;
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+        // Prevent the mini-infobar from appearing on mobile
+        e.preventDefault();
+        // Stash the event so it can be triggered later.
+        deferredPrompt = e;
+
+        // Tampilkan prompt install sesuai kebutuhan
+        const installButton = document.createElement('button');
+        installButton.innerText = 'Install';
+        installButton.addEventListener('click', (e) => {
+            // Tampilkan prompt install
+            deferredPrompt.prompt();
+            // Tunggu pengguna untuk memilih
+            deferredPrompt.userChoice.then((choiceResult) => {
+            if (choiceResult.outcome === 'accepted') {
+                console.log('User accepted the A2HS prompt');
+            } else {
+                console.log('User dismissed the A2HS prompt');
+            }
+            deferredPrompt = null;
+            });
+        });
+
+        document.body.appendChild(installButton);
+        });
+
+
     </script>
       
 </body>

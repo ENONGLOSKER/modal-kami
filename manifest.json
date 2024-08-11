@@ -1,0 +1,22 @@
+{
+    "name": "MODAL KAMI",
+    "short_name": "MODAL",
+    "description": "Aplikasi keuangan sederhana",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#ffffff",
+    "theme_color": "#4000F9",
+    "icons": [
+      {
+        "src": "icon.svg",
+        "sizes": "192x192",
+        "type": "icon.svg"
+      },
+      {
+        "src": "icon-512x512.png",
+        "sizes": "512x512",
+        "type": "icon.svg"
+      }
+    ]
+  }
+  
