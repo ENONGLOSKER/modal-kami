@@ -467,19 +467,26 @@
     
         // Fungsi untuk membuat entry baru
         function createEntry() {
+            // Ambil nilai nominal dari input, buang format angka seperti titik dan koma
             const nominalValue = document.getElementById('nominal').value.replace(/\./g, '').replace(/,/g, '');
             const nominal = parseInt(nominalValue);
+            
+            // Ambil nilai kategori dan keterangan dari form
             const kategori = document.getElementById('kategori').value;
             const keterangan = document.getElementById('keterangan').value;
+            
+            // Dapatkan tanggal saat ini
             const date = new Date().toLocaleDateString('id-ID', {
                 year: 'numeric', month: 'long', day: 'numeric'
             });
-    
+
+            // Validasi nominal agar tidak bernilai NaN atau kurang dari atau sama dengan nol
             if (isNaN(nominal) || nominal <= 0) {
                 alert("Masukkan nominal yang valid.");
                 return;
             }
-    
+
+            // Update nilai total berdasarkan kategori
             if (kategori === 'Masuk') {
                 totalModal += nominal;
                 totalMasuk += nominal;
@@ -487,11 +494,13 @@
                 totalModal -= nominal;
                 totalKeluar += nominal;
             }
-    
+
+            // Update tampilan total modal, masuk, dan keluar
             updateTotalModal();
             updateTotalMasuk();
             updateTotalKeluar();
-    
+
+            // Buat tampilan entri baru untuk ditambahkan ke histori
             const entryHTML = `
                 <div class="accordion-card" onclick="toggleAccordion(this)">
                     <div class="accordion-header">
@@ -509,16 +518,21 @@
                     </div>
                 </div>
             `;
-    
+
+            // Tambahkan entri baru ke histori
             document.getElementById('histori').insertAdjacentHTML('beforeend', entryHTML);
-    
+
+            // Simpan entri baru ke storage (misal localStorage atau database)
             saveEntry(date, nominal, kategori, keterangan);
-    
+
+            // Reset form dan tutup dialog setelah entri ditambahkan
             document.getElementById('keuanganForm').reset();
             document.getElementById('dialog').close();
-    
+
+            // Cek apakah target telah tercapai dan beri efek confetti jika ya
             checkTargetAchieved();
         }
+
     
         // Fungsi untuk menyimpan entry ke localStorage
         function saveEntry(date, nominal, kategori, keterangan) {
