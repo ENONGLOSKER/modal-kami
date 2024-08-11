@@ -1,8 +1,8 @@
 {
-    "name": "MODAL KAMI",
-    "short_name": "MODAL",
-    "description": "Aplikasi keuangan sederhana",
-    "start_url": "/",
+    "name": "Modal Kami",
+    "short_name": "ModalKami",
+    "description": "Aplikasi untuk mencatat keuangan.",
+    "start_url": "index.html",
     "display": "standalone",
     "background_color": "#ffffff",
     "theme_color": "#4000F9",
@@ -10,12 +10,12 @@
       {
         "src": "icon.svg",
         "sizes": "192x192",
-        "type": "icon.svg"
+        "type": "image/svg+xml"
       },
       {
-        "src": "icon-512x512.png",
+        "src": "icon.svg",
         "sizes": "512x512",
-        "type": "icon.svg"
+        "type": "image/svg+xml"
       }
     ]
   }
