@@ -158,10 +158,61 @@
         #ktg{
             text-decoration: none;
         }
+
+
+        /* pop up */
+        /* Gaya untuk container pop-up */
+.popup {
+    display: none; /* Tersembunyi secara default */
+    position: fixed;
+    z-index: 1000; /* Pastikan di atas konten lain */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Warna latar belakang semi-transparan */
+    justify-content: center;
+    align-items: center;
+}
+
+/* Gaya untuk konten pop-up */
+.popup-content {
+    background-color: #fefefe;
+    padding: 20px;
+    border-radius: 5px;
+    width: 300px;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    position: relative;
+}
+
+/* Gaya untuk tombol close (x) */
+.close-button {
+    position: absolute;
+    top: 5px;
+    right: 8px;
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close-button:hover {
+    color: red;
+}
+
     </style>
     </style>
 </head>
 <body>
+
+    <!-- pop up -->
+    <div id="customPopup" class="popup">
+        <div class="popup-content">
+            <span class="close-button" id="closePopup">&times;</span>
+            <p>🙏 Mohon maaf Fitur ini belum tersedia!</p>
+        </div>
+    </div>
+    
 
     <!-- form set catatan -->
     <dialog id="dialog">
@@ -204,9 +255,9 @@
     <div class="container">
         <div class="akun">
             <img src="logo.svg" alt="">
-            <a href="" style="">
-                <ion-icon name="finger-print" style="width: 20px; height: 25px;"></ion-icon>
-                <span>Sign in</span>
+            <a href="#" id="signInLink">
+                <ion-icon name="stats-chart-outline" style="width: 20px; height: 25px;"></ion-icon>
+                <span>Laporan</span>
             </a>
         </div>
 
@@ -278,6 +329,29 @@
 
     <!-- code utama -->
     <script>
+
+        // signin
+        // document.getElementById('signInLink').addEventListener('click', function(event) {
+        //     event.preventDefault(); // Mencegah navigasi default
+        //     alert("🙏 Mohon maaf Fitur ini belum tersedia!");
+        // });
+
+        document.getElementById('signInLink').addEventListener('click', function(event) {
+            event.preventDefault(); // Mencegah navigasi default
+            document.getElementById('customPopup').style.display = 'flex'; // Tampilkan pop-up
+        });
+
+        document.getElementById('closePopup').addEventListener('click', function() {
+            document.getElementById('customPopup').style.display = 'none'; // Sembunyikan pop-up saat tombol close diklik
+        });
+
+        window.addEventListener('click', function(event) {
+            if (event.target === document.getElementById('customPopup')) {
+                document.getElementById('customPopup').style.display = 'none'; // Sembunyikan pop-up jika klik di luar konten
+            }
+        });
+
+
         let totalModal = 0;
         let totalMasuk = 0;
         let totalKeluar = 0;
