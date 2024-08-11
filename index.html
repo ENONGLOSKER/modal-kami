@@ -408,13 +408,13 @@
                 <div class="accordion-card" onclick="toggleAccordion(this)">
                     <div class="accordion-header">
                         <div class="left-section">
-                            <ion-icon name="${kategori === 'Masuk' ? 'cloud-download' : 'cloud-upload'}" id="icons"></ion-icon>
+                            <ion-icon name="${kategori === 'Masuk' ? 'cloud-download' : 'cloud-upload'}" id="icons" style="background-color: ${kategori === 'Masuk' ? '#17d302' : '#e6032d'};"></ion-icon>
                             <div class="info">
                                 <div class="date">${date}</div>
                                 <h3 class="amount">Rp ${nominal.toLocaleString('id-ID')}</h3>
                             </div>
                         </div>
-                        <a href="#" class="text-right" id="ktg" onclick="deleteEntry(event, this, '${date}', ${nominal}, '${kategori}')">${kategori}</a>
+                        <a href="#" class="text-right" id="ktg" style="color:${ kategori === 'Masuk' ? '#17d302' : '#e6032d' };" onclick="deleteEntry(event, this, '${date}', ${nominal}, '${kategori}')">${kategori}</a>
                     </div>
                     <div class="accordion-content">
                         <p>${keterangan}</p>
@@ -487,25 +487,14 @@
                         <div class="accordion-card" onclick="toggleAccordion(this)">
                             <div class="accordion-header">
                                 <div class="left-section">
-                                    <ion-icon name="${kategori === 'Masuk' ? 'cloud-download' : 'cloud-upload'}" 
-                                            id="icons" 
-                                            style="background-color: ${kategori === 'Masuk' ? '#17d302' : '#e6032d'}; 
-                                                    color: white; 
-                                                    width: 24px; 
-                                                    height: 24px; 
-                                                    padding: 8px; 
-                                                    border-radius: 50px;">
+                                    <ion-icon name="${kategori === 'Masuk' ? 'cloud-download' : 'cloud-upload'}" id="icons" style="background-color: ${kategori === 'Masuk' ? '#17d302' : '#e6032d'};">
                                     </ion-icon>
                                     <div class="info">
                                         <div class="date">${date}</div>
                                         <h3 class="amount">Rp ${nominal.toLocaleString('id-ID')}</h3>
                                     </div>
                                 </div>
-                                <a href="#" class="text-right" 
-                                id="ktg" 
-                                style="font-weight: 500; 
-                                        color: ${kategori === 'Masuk' ? '#17d302' : '#e6032d'};" 
-                                onclick="deleteEntry(event, this, '${date}', ${nominal}, '${kategori}')">
+                                <a href="#" class="text-right" id="ktg" style="color: ${kategori === 'Masuk' ? '#17d302' : '#e6032d'};" onclick="deleteEntry(event, this, '${date}', ${nominal}, '${kategori}')">
                                 ${kategori}
                                 </a>
                             </div>
